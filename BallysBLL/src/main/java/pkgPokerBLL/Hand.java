@@ -7,11 +7,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.UUID;
 
+import pkgException.HandException;
+import pkgException.exHand;
 import pkgPokerEnum.eCardNo;
 import pkgPokerEnum.eHandStrength;
 import pkgPokerEnum.eRank;
 import pkgPokerEnum.eSuit;
- 
+
 
 public class Hand {
 
@@ -40,9 +42,12 @@ public class Hand {
 		CardsInHand.add(c);
 	}
 
-	public Hand EvaluateHand() {
+	public Hand EvaluateHand() throws HandException {
 
 		Hand h = null;
+		if(this.getCardsInHand().size() !=5) {
+			throw new HandException(this);
+		}
 
 		ArrayList<Hand> ExplodedHands = ExplodeHands(this);
 
@@ -52,22 +57,37 @@ public class Hand {
 
 		//	Figure out best hand
 		Collections.sort(ExplodedHands, Hand.HandRank);
-		
-		//	Return best hand.  
-		//	TODO: Fix...  what to do if there is a tie?
+
+		//	Return best hand.
 		return ExplodedHands.get(0);
 	}
 
-	
-	//TODO: one hand is passed in, 1, 52, 2704, etc are passed back
-	//		No jokers, 'ReturnHands' should have one hand
-	//		One Wild/joker 'ReturnHands' should have 52 hands, etc
-	
+
+
 	public static ArrayList<Hand> ExplodeHands(Hand h) {
 
 		ArrayList<Hand> ReturnHands = new ArrayList<Hand>();
-		return ReturnHands;
-	}
+		int nbrofjokers = 0;
+		for (Card card : h.getCardsInHand()) {
+			if (card.geteRank() == eRank.JOKER) {
+				nbrofjokers++;
+
+			}
+		}
+		if (nbrofjokers == 0) {
+			ReturnHands.add(h);
+			return ReturnHands;
+		}
+		Collections.sort(h.getCardsInHand());
+
+		ReturnHands.add(h);
+		for (int i = 0; i < nbrofjokers; i++) {
+			return ReturnHands;
+		}
+
+		}}
+
+
 
 	private static Hand EvaluateHand(Hand h) {
 
@@ -113,6 +133,26 @@ public class Hand {
 			e.printStackTrace();
 		}
 		return h;
+	}
+	public static Hand PickBestHand(ArrayList<Hand> Hands) throws exHand {
+		Collections.sort(Hands, Hand.HandRank);
+		Hand hand = null;
+		ArrayList<Hand> Winning = new ArrayList<Hand>();
+		Hand h = Hands.get((Integer) null);
+		for (Hand hand1 : Hands) {
+			if(h.getHandScore().getHandStrength() == hand1.getHandScore().getHandStrength()) {
+				Winning.add(hand1);
+			}
+		}
+		if(Winning.size()!=1) {
+			throw new exHand("Incorrect");
+
+		}
+		else {
+			hand = Winning.get((Integer) null);
+
+		}
+		return hand;
 	}
 
 	public static boolean isStraight(ArrayList<Card> cards, Card c) {
@@ -212,8 +252,35 @@ public class Hand {
 		return isHandStraightFlush;
 
 	}
+	// Five of a Kind
+	public static boolean isHandFiveOfAKind(Hand h, HandScore hs) {
+		boolean isHandFiveOfAKind = false;
+		ArrayList<Card> kickers = new ArrayList<Card>();
+		if (h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == h.getCardsInHand()
+				.get(eCardNo.SecondCard.getCardNo()).geteRank()
+			&& (h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == h.getCardsInHand()
+				.get(eCardNo.ThirdCard.getCardNo()).geteRank()
+			&& (h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == h.getCardsInHand()
+				.get(eCardNo.FourthCard.getCardNo()).geteRank()
+			&& (h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == h.getCardsInHand()
+					.get(eCardNo.FifthCard.getCardNo()).geteRank()))))
+			{
+				isHandFiveOfAKind = true;
+			}
+			hs.setHandStrength(eHandStrength.FiveOfAKind);
+			hs.setHiHand(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank());
+			hs.setLoHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank());
+			return isHandFiveOfAKind;
+
+
+
+		}
+
+		// Create HandException class
+
 
 	// TODO: Implement This Method
+
 	public static boolean isHandFourOfAKind(Hand h, HandScore hs) {
 
 		boolean isHandFourOfAKind = false;
