@@ -57,7 +57,12 @@ public enum eHandStrength {
 		public String toString() {
 			return "High Card";
 		}
-	};
+	},
+	FiveOfAKind(110, "isHandFiveOfAKind") {
+		public String toString() {
+			return "Five of a Kind";
+		}
+};
 
 	private eHandStrength(final int handstrength, final String EvalMethod) {
 		this.iHandStrength = handstrength;

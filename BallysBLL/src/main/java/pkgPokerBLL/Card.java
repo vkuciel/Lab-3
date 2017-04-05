@@ -1,3 +1,8 @@
+/*
+ * Martel, Lorna 33%
+ * Lampert, Jake 33%
+ * Kuciel, Victor 33%
+ */
 package pkgPokerBLL;
 
 import java.util.Comparator;
@@ -10,6 +15,7 @@ public class Card implements Comparable {
 	private eRank eRank;
 	private eSuit eSuit;
 	private int iCardNbr;
+	private boolean Wild = false;
 
 	public Card() {
 	}
@@ -25,6 +31,13 @@ public class Card implements Comparable {
 		this.eSuit = eSuit;
 		this.iCardNbr = iCardNbr;
 	}
+	
+	public Card(eSuit eSuit, eRank eRank, int iCardNbr, boolean Wild) {
+		this.eRank = eRank;
+		this.eSuit = eSuit;
+		this.iCardNbr = iCardNbr;
+		this.Wild = Wild;
+	}
 
 	public eRank geteRank() {
 		return eRank;
@@ -37,6 +50,10 @@ public class Card implements Comparable {
 	public int getiCardNbr() {
 		return iCardNbr;
 	}
+	public boolean isWild() {
+		return Wild;
+		
+	}
 
 	public void seteRank(eRank eRank) {
 		this.eRank = eRank;
@@ -44,6 +61,9 @@ public class Card implements Comparable {
 
 	public void seteSuit(eSuit eSuit) {
 		this.eSuit = eSuit;
+	}
+	public void setWild(boolean bool) {
+		this.Wild = bool;
 	}
 
 	public int compareTo(Object o) {
